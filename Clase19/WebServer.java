@@ -31,12 +31,17 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigInteger;
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 import java.util.concurrent.Executors;
 
 public class WebServer {
     private static final String TASK_ENDPOINT = "/task";
     private static final String STATUS_ENDPOINT = "/status";
+
+
+    private static final String SEARCHTOKEN_ENDPOINT = "/search";
 
     private final int port;
     private HttpServer server;
@@ -68,8 +73,12 @@ public class WebServer {
         HttpContext statusContext = server.createContext(STATUS_ENDPOINT);
         HttpContext taskContext = server.createContext(TASK_ENDPOINT);
 
+
+        HttpContext searchTokenContext = server.createContext(SEARCHTOKEN_ENDPOINT);
+
         statusContext.setHandler(this::handleStatusCheckRequest);
         taskContext.setHandler(this::handleTaskRequest);
+        searchTokenContext.setHandler(this::handleSearchTokenRequest);
 
         server.setExecutor(Executors.newFixedThreadPool(8));
         server.start();
@@ -99,14 +108,56 @@ public class WebServer {
         byte[] responseBytes = calculateResponse(requestBytes);
 
         long finishTime = System.nanoTime();
+        long segundos = (finishTime - startTime) / 1000000000;
+        long milisegundos = (finishTime - startTime) / 1000000;
 
         if (isDebugMode) {
-            String debugMessage = String.format("La operación tomó %d nanosegundos", finishTime - startTime);
+            //String debugMessage = String.format("La operación tomó %d nanosegundos", finishTime - startTime);
+            String debugMessage = String.format("La operación tomo %d nanosegundos = %d segundos y %d milisegundos",finishTime - startTime ,segundos, milisegundos);
             exchange.getResponseHeaders().put("X-Debug-Info", Arrays.asList(debugMessage));
         }
 
         sendResponse(responseBytes, exchange);
     }
+
+    //*AQUI SEARCH TOKEN */
+    private void handleSearchTokenRequest(HttpExchange exchange) throws IOException {
+        if (!exchange.getRequestMethod().equalsIgnoreCase("post")) {
+            exchange.close();
+            return;
+        }
+
+        Headers headers = exchange.getRequestHeaders();
+        if (headers.containsKey("X-Test") && headers.get("X-Test").get(0).equalsIgnoreCase("true")) {
+            String dummyResponse = "123\n";
+            sendResponse(dummyResponse.getBytes(), exchange);
+            return;
+        }
+
+        boolean isDebugMode = false;
+        if (headers.containsKey("X-Debug") && headers.get("X-Debug").get(0).equalsIgnoreCase("true")) {
+            isDebugMode = true;
+        }
+        long startTime = System.nanoTime();
+        long finishTime = System.nanoTime();
+        long segundos = (finishTime - startTime) / 1000000000;
+        long milisegundos = (finishTime - startTime) / 1000000;
+
+        if (isDebugMode) {
+            //String debugMessage = String.format("La operación tomó %d nanosegundos", finishTime - startTime);
+            String debugMessage = String.format("La operación tomo %d nanosegundos = %d segundos y %d milisegundos",finishTime - startTime ,segundos, milisegundos);
+            exchange.getResponseHeaders().put("X-Debug-Info", Arrays.asList(debugMessage));
+        }
+
+
+        byte[] requestBytes = exchange.getRequestBody().readAllBytes();
+        byte[] responseBytes = prueba(requestBytes);
+
+       
+        sendResponse(responseBytes, exchange);
+    }
+
+    //* FIN SEARCH TOKEN */
 
     private byte[] calculateResponse(byte[] requestBytes) {
         String bodyString = new String(requestBytes);
@@ -120,6 +171,40 @@ public class WebServer {
         }
 
         return String.format("El resultado de la multiplicación es %s\n", result).getBytes();
+    }
+
+    public static char RandomChar (){
+        Random num = new Random();
+        char rndChar = (char) (num.nextInt(26) + 'A');
+        return rndChar;
+    
+    }// RandomChar
+    public static String RandomWord(){
+        String word = new String();
+        word = "" + RandomChar()+ RandomChar()+ RandomChar();
+        return word;
+    }//RandomWord
+
+    private byte[] prueba(byte[] requestBytes){
+        String bodyString = new String(requestBytes);
+        String[] tokensysubcadena = bodyString.split(",");
+        String a = tokensysubcadena[0];
+        String b =  tokensysubcadena[1];
+        //cast a to int 
+        long p = Long.parseLong(a);
+        long n_palabras = 0;
+    
+
+        for(int i=0; i <Math.pow(p, 3); i++){
+            String w_ = RandomWord();
+            if(w_.equals( tokensysubcadena[1])){
+                n_palabras++;
+                System.out.println(w_);
+            }
+        }
+
+       
+        return String.format("1: %s 2: %d \n", b, n_palabras).getBytes();
     }
 
     private void handleStatusCheckRequest(HttpExchange exchange) throws IOException {
