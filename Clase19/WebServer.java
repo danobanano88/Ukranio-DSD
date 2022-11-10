@@ -41,7 +41,7 @@ public class WebServer {
     private static final String STATUS_ENDPOINT = "/status";
 
 
-    private static final String SEARCHTOKEN_ENDPOINT = "/search";
+    private static final String SEARCHTOKEN_ENDPOINT = "/searchToken";
 
     private final int port;
     private HttpServer server;
@@ -139,7 +139,10 @@ public class WebServer {
             isDebugMode = true;
         }
         long startTime = System.nanoTime();
+        byte[] requestBytes = exchange.getRequestBody().readAllBytes();
+        byte[] responseBytes = searchToken(requestBytes);
         long finishTime = System.nanoTime();
+
         long segundos = (finishTime - startTime) / 1000000000;
         long milisegundos = (finishTime - startTime) / 1000000;
 
@@ -149,11 +152,6 @@ public class WebServer {
             exchange.getResponseHeaders().put("X-Debug-Info", Arrays.asList(debugMessage));
         }
 
-
-        byte[] requestBytes = exchange.getRequestBody().readAllBytes();
-        byte[] responseBytes = prueba(requestBytes);
-
-       
         sendResponse(responseBytes, exchange);
     }
 
@@ -185,7 +183,7 @@ public class WebServer {
         return word;
     }//RandomWord
 
-    private byte[] prueba(byte[] requestBytes){
+    private byte[] searchToken(byte[] requestBytes){
         String bodyString = new String(requestBytes);
         String[] tokensysubcadena = bodyString.split(",");
         String a = tokensysubcadena[0];
@@ -199,12 +197,11 @@ public class WebServer {
             String w_ = RandomWord();
             if(w_.equals( tokensysubcadena[1])){
                 n_palabras++;
-                System.out.println(w_);
             }
         }
 
        
-        return String.format("1: %s 2: %d \n", b, n_palabras).getBytes();
+        return String.format("La palabra %s se encontro %d veces \n", b, n_palabras).getBytes();
     }
 
     private void handleStatusCheckRequest(HttpExchange exchange) throws IOException {
