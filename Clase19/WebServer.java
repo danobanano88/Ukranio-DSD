@@ -144,11 +144,14 @@ public class WebServer {
         long finishTime = System.nanoTime();
 
         long segundos = (finishTime - startTime) / 1000000000;
+        //calcular cuantos segundos con milisegundos tomo la operacion
         long milisegundos = (finishTime - startTime) / 1000000;
+        long ms = (milisegundos - (segundos * 1000));
+        
 
         if (isDebugMode) {
             //String debugMessage = String.format("La operación tomó %d nanosegundos", finishTime - startTime);
-            String debugMessage = String.format("La operación tomo %d nanosegundos = %d segundos y %d milisegundos",finishTime - startTime ,segundos, milisegundos);
+            String debugMessage = String.format("La operación tomo %d nanosegundos = %d segundos con %d milisegundos",finishTime - startTime ,segundos, ms);
             exchange.getResponseHeaders().put("X-Debug-Info", Arrays.asList(debugMessage));
         }
 
