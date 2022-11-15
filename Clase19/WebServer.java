@@ -196,7 +196,7 @@ public class WebServer {
         long n_palabras = 0;
     
 
-        for(int i=0; i <Math.pow(p, 3); i++){
+        for(int i=0; i <p; i++){
             String w_ = RandomWord();
             if(w_.equals( tokensysubcadena[1])){
                 n_palabras++;
