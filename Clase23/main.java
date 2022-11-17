@@ -1,8 +1,3 @@
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -11,12 +6,6 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -63,21 +52,34 @@ public class main {
 
    
     public static void main(String[] args) {
-        long startTime = System.nanoTime();
         int i = Integer.parseInt(args[0]);
-        ExecutorService pool = Executors.newFixedThreadPool(100); 
-
+        ExecutorService pool = Executors.newFixedThreadPool(4); 
+        Runnable r1 = new Task();
+        // Runnable r2 = new Task();
+        // Runnable r3 = new Task();
+        // Runnable r4 = new Task();
     
         for(int a = 0; a<i;a++){
-            Runnable r1 = new Task();
+            
             pool.execute(r1);
+            
+            // pool.execute(r2);
+            
+            // pool.execute(r3);
+            
+            // pool.execute(r4);
+            // Runnable r5 = new Task();
+            // pool.execute(r5);
+            // Runnable r6 = new Task();
+            // pool.execute(r6);
+            // Runnable r7 = new Task();
+            // pool.execute(r7);
+            // Runnable r8 = new Task();
+            // pool.execute(r8);     
         }
-
+        
         pool.shutdown();
-        long finishTime = System.nanoTime();
-
-        long segundos = (finishTime - startTime) / 1000000000;
-        System.out.println(segundos);
+       
          
          //ExecutorService pool = Executors.newFixedThreadPool(3);  
           
