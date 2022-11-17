@@ -5,6 +5,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 public class clientTask implements Runnable {
+
     private String name;
     private HttpRequest request;
     private HttpClient client;
@@ -13,6 +14,8 @@ public class clientTask implements Runnable {
         this.request = rqst;
         this.client = cl;
     }
+
+    
     public void run() {
         try {
             HttpResponse<String> response = this.client.send(this.request, HttpResponse.BodyHandlers.ofString());
