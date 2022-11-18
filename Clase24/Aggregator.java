@@ -34,34 +34,46 @@ public class Aggregator {
     }
 
     public List<String> sendTasksToWorkers(List<String> workersAddresses, List<String> tasks) {
-        CompletableFuture<String>[] futures = new CompletableFuture[workersAddresses.size()];
+        CompletableFuture<String>[] futures = new CompletableFuture[tasks.size()];
+        System.out.println("tareas: "+tasks);
 
+  
         for (int i = 0; i < workersAddresses.size(); i++) {
             String workerAddress = workersAddresses.get(i);
             String task = tasks.get(i);
             byte[] requestPayload = task.getBytes();
             futures[i] = webClient.sendTask(workerAddress, requestPayload);
-            System.out.println("Sent task to worker: " + workerAddress);
+            System.out.println("\nServidor: " + workerAddress + "-> "+" tarea: " + task);
         }
+        
         boolean bandera = true;
         while(bandera){
-            bandera = false;
-            for (int i = 0; i < futures.length; i++) {
-                if(!futures[i].isDone()){
-                    bandera = true;   
+            for(int j = 0; j < workersAddresses.size(); j++){
+                if (true == futures[j].isDone()){
+                System.out.println("\nEl primer servidor en terminar fue: " + workersAddresses.get(j) + " y se le asigna la tarea: " + tasks.get(j+2));
+                String finishedWorker = workersAddresses.get(j);
+                String task = tasks.get(2); ;
+                byte[] requestPayload = task.getBytes();
+                futures[j+2] = webClient.sendTask(finishedWorker, requestPayload);  
+                bandera = false;
                 }
-                if(futures[i].isDone()){
-                    System.out.println("El hilo "+i+" ha terminado");
 
-                }
             }
+
         }
-        List<String> results = new ArrayList();
-        for (int i = 0; i < tasks.size(); i++) {
-            results.add(futures[i].join());
-        }
+
+        //get results from workers
+        List<String> results = new ArrayList<>();
+        // System.out.println(futures[0].join());
+        // System.out.println(futures[1].join());
+        // System.out.println(futures[2].join());
+   
+        results.add(futures[0].join());
+        results.add(futures[1].join());
+        results.add(futures[2].join());
 
         return results;
+
     }
 
 }
