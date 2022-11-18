@@ -29,11 +29,25 @@ public class main {
 
         int n = Integer.parseInt(args[0]);
     
-        ExecutorService pool = Executors.newFixedThreadPool(1);  
+        ExecutorService pool = Executors.newFixedThreadPool(100);  
 
         for (int i = 0; i < n; i++) {
             Runnable r = new Task();
             pool.execute(r);
+            Runnable r2 = new Task();
+            pool.execute(r2);
+            Runnable r3 = new Task();
+            pool.execute(r3);
+            Runnable r4 = new Task();
+            pool.execute(r4);
+            Runnable r5 = new Task();
+            pool.execute(r5);
+            Runnable r6 = new Task();
+            pool.execute(r6);
+            Runnable r7 = new Task();
+            pool.execute(r7);
+            Runnable r8 = new Task();
+            pool.execute(r8);
         }
         pool.shutdown();
         pool.awaitTermination(10, TimeUnit.SECONDS);
