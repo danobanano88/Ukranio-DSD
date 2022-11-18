@@ -29,7 +29,7 @@ public class main {
 
         int n = Integer.parseInt(args[0]);
     
-        ExecutorService pool = Executors.newFixedThreadPool(100);  
+        ExecutorService pool = Executors.newFixedThreadPool(1);  
 
         for (int i = 0; i < n; i++) {
             Runnable r = new Task();
