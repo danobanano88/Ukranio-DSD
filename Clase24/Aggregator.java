@@ -52,7 +52,7 @@ public class Aggregator {
                 if (true == futures[j].isDone()){
                 System.out.println("\nEl primer servidor en terminar fue: " + workersAddresses.get(j) + " y se le asigna la tarea: " + tasks.get(j+2));
                 String finishedWorker = workersAddresses.get(j);
-                String task = tasks.get(2); ;
+                String task = tasks.get(2); ;    
                 byte[] requestPayload = task.getBytes();
                 futures[j+2] = webClient.sendTask(finishedWorker, requestPayload);  
                 bandera = false;
