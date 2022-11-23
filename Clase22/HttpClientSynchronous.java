@@ -19,7 +19,7 @@ public class HttpClientSynchronous {
 
       
             HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create("http://172.26.71.72:8082/searchToken"))
+            .uri(URI.create("https://35.224.253.123:8082/searchToken"))
             .header("X-Debug", "true")
             .POST(BodyPublishers.ofString("17576000,IPN"))
             .build();
